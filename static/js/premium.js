@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!daysEl && !hoursEl && !minutesEl && !secondsEl) return;
 
-        // Target Date: January 12, 2026 (or next year if current clock is past 2026 so timer remains active)
+        // Target Date: January 12
         let target = new Date('January 12, 2026 23:59:59');
         if (target.getTime() < Date.now()) {
             target = new Date('January 12, 2027 23:59:59');
