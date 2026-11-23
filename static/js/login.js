@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error(err);
+            errEl.textContent = 'Network or connection error. Please try again.';
+            errEl.style.display = 'block';
         }
     });
 
@@ -82,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch(err) {
             console.error(err);
+            errEl.textContent = 'Connection error during 2FA setup verification.';
+            errEl.style.display = 'block';
         }
     });
 
@@ -107,6 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch(err) {
             console.error(err);
+            errEl.textContent = 'Connection error during 2FA code verification.';
+            errEl.style.display = 'block';
         }
     });
 

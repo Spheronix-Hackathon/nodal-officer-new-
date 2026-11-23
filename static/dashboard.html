@@ -20,24 +20,32 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
             margin: 0;
-            background: #f8fafc;
+            background: 
+                radial-gradient(1200px 800px at 12% 12%, rgba(147, 197, 253, 0.32) 0%, transparent 60%),
+                radial-gradient(1100px 750px at 88% 15%, rgba(196, 181, 253, 0.36) 0%, transparent 60%),
+                radial-gradient(950px 700px at 85% 85%, rgba(221, 214, 254, 0.38) 0%, transparent 65%),
+                radial-gradient(850px 600px at 15% 85%, rgba(165, 180, 252, 0.26) 0%, transparent 60%),
+                linear-gradient(135deg, #f4f6fa 0%, #edf1f8 48%, #f3edf8 100%);
+            background-attachment: fixed;
             color: var(--text-main);
+            min-height: 100vh;
         }
 
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 40px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
+            padding: 14px 40px;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.9);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.05), inset 0 -1px 0 rgba(255, 255, 255, 0.8);
         }
 
         .user-profile {
@@ -64,15 +72,15 @@
         }
 
         .dashboard-container {
-            max-width: 1000px;
-            margin: 60px auto;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            max-width: 1040px;
+            margin: 40px auto 60px;
+            padding: 44px;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(32px) saturate(190%);
+            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            border-radius: 32px;
+            box-shadow: 0 35px 80px -20px rgba(30, 41, 59, 0.12), inset 0 1px 2px rgba(255, 255, 255, 1);
             position: relative;
             z-index: 10;
         }
@@ -82,8 +90,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         .dashboard-header h2 {
@@ -96,30 +104,38 @@
         }
 
         .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: #e2e8f0;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: rgba(241, 245, 249, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             color: #475569;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), inset 0 1px 1px #fff;
         }
 
         .status-badge.completed {
-            background: #d1fae5;
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.3);
             color: #047857;
         }
 
         .step-section {
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             padding: 30px;
-            border-radius: 16px;
+            border-radius: 24px;
             margin-bottom: 25px;
-            background: rgba(255, 255, 255, 0.6);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 24px -4px rgba(30, 41, 59, 0.04), inset 0 1px 1px #ffffff;
+            transition: transform 0.25s, box-shadow 0.25s;
         }
 
         .step-section:hover {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 16px 36px -6px rgba(30, 41, 59, 0.08), inset 0 1px 1px #ffffff;
+            transform: translateY(-2px);
         }
 
         .step-section h3 {
@@ -132,12 +148,16 @@
         }
 
         .summary-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 25px;
-            border-radius: 12px;
+            background: rgba(241, 245, 249, 0.65);
+            border: 1.5px solid rgba(255, 255, 255, 0.9);
+            padding: 24px;
+            border-radius: 20px;
             margin-top: 15px;
             display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.03);
+        }
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
@@ -226,28 +246,32 @@
 
         .data-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             font-size: 0.95rem;
-            background: #fff;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 8px 24px -4px rgba(30, 41, 59, 0.04), inset 0 1px 1px #ffffff;
         }
 
         .data-table th,
         .data-table td {
             padding: 14px 18px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.7);
         }
 
         .data-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #475569;
+            background: rgba(241, 245, 249, 0.85);
+            font-weight: 700;
+            color: #334155;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
         }
 
         .data-table tr:last-child td {
@@ -255,7 +279,7 @@
         }
 
         .data-table tr:hover td {
-            background: #f8fafc;
+            background: rgba(241, 245, 249, 0.6);
         }
 
         .clickable-row {
@@ -264,7 +288,7 @@
         }
 
         .clickable-row:hover td {
-            background: #e2e8f0 !important;
+            background: rgba(226, 232, 240, 0.8) !important;
         }
 
         .btn-submit {
@@ -370,31 +394,36 @@
 
         /* Flip Reel Admin Styles */
         .flip-admin-tabs {
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 20px;
+            display: inline-flex;
+            background: rgba(226, 232, 240, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            border-radius: 9999px;
+            padding: 4px;
+            gap: 4px;
+            margin-bottom: 24px;
+            box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.03);
         }
 
         .flip-tab-btn {
-            background: none;
+            background: transparent;
             border: none;
-            border-bottom: 3px solid transparent;
-            padding: 10px 18px;
+            padding: 8px 18px;
+            border-radius: 9999px;
             font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-muted);
+            font-size: 13px;
+            color: #64748b;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
-            margin-bottom: -2px;
+            transition: all 0.25s;
         }
 
         .flip-tab-btn.active {
-            color: var(--primary-dark);
-            border-bottom-color: var(--primary);
+            background: #ffffff;
+            color: #0f172a;
+            font-weight: 700;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.07), inset 0 1px 0 #ffffff;
         }
 
         .flip-admin-grid {
@@ -405,21 +434,24 @@
         }
 
         .flip-reel-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 24px -4px rgba(30, 41, 59, 0.05), inset 0 1px 1px #ffffff;
+            transition: transform 0.25s, box-shadow 0.25s;
             position: relative;
         }
 
         .flip-reel-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 16px 36px -6px rgba(30, 41, 59, 0.1), inset 0 1px 1px #ffffff;
+            border-color: rgba(37, 99, 235, 0.4);
         }
 
         .flip-reel-thumb-wrap {

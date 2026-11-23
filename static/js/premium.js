@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Countdown Timer
     const countdown = () => {
-        const targetDate = new Date('November 26, 2026 23:59:59').getTime();
+        const targetDate = new Date('January 12, 2027 23:59:59').getTime();
 
         const updateTimer = () => {
             const now = new Date().getTime();
@@ -55,13 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     countdown();
 
-    // Smooth scroll
+    // Smooth scroll (safe check against lone '#' or invalid selectors)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const href = this.getAttribute('href');
+            if (!href || href === '#' || href === '#!') return;
+            try {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            } catch (err) {
+                // Ignore invalid query selectors
+            }
         });
     });
 
