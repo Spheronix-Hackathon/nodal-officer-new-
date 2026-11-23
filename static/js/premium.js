@@ -19,7 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Countdown Timer
     const countdown = () => {
-        const targetDate = new Date('January 12, 2027 23:59:59').getTime();
+        const daysEl = document.querySelector('.days');
+        const hoursEl = document.querySelector('.hours');
+        const minutesEl = document.querySelector('.minutes');
+        const secondsEl = document.querySelector('.seconds');
+
+        if (!daysEl && !hoursEl && !minutesEl && !secondsEl) return;
+
+        // Target Date: January 12, 2026 (or next year if current clock is past 2026 so timer remains active)
+        let target = new Date('January 12, 2026 23:59:59');
+        if (target.getTime() < Date.now()) {
+            target = new Date('January 12, 2027 23:59:59');
+        }
+        const targetDate = target.getTime();
 
         const updateTimer = () => {
             const now = new Date().getTime();
@@ -29,11 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            const daysEl = document.querySelector('.days');
-            const hoursEl = document.querySelector('.hours');
-            const minutesEl = document.querySelector('.minutes');
-            const secondsEl = document.querySelector('.seconds');
 
             if (daysEl) daysEl.innerText = days < 10 ? '0' + days : days;
             if (hoursEl) hoursEl.innerText = hours < 10 ? '0' + hours : hours;
