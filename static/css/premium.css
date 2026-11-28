@@ -1458,40 +1458,50 @@ body>.ap-tricolor-bar {
     max-width: 820px;
     margin: 0 auto;
     overflow: hidden;
-    text-align: center;
+    white-space: nowrap;
+    padding: 6px 0;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
 }
 
 .poster-text-track {
-    display: flex;
-    width: 100%;
-    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
+    animation: marquee-scroll 20s linear infinite;
 }
 
-.poster-text-slide {
-    flex: 0 0 100%;
-    min-width: 100%;
-    width: 100%;
-    padding: 4px 12px 0;
-    text-align: center;
-    box-sizing: border-box;
+.poster-caption-below:hover .poster-text-track {
+    animation-play-state: paused;
+}
+
+.poster-scroll-chunk {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 48px;
 }
 
 .poster-college-name {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.45rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #0D1B3E;
-    line-height: 1.3;
-    margin: 0 0 6px 0;
+    letter-spacing: 0.01em;
+    margin: 0;
+}
+
+.poster-scroll-sep {
+    color: #E8571A;
+    font-weight: 800;
+    font-size: 1.1rem;
 }
 
 .poster-college-message {
     font-size: 0.98rem;
-    line-height: 1.65;
+    font-weight: 500;
     color: #475569;
-    max-width: 720px;
-    margin: 0 auto;
-    white-space: pre-line;
+    margin: 0;
 }
 
 .hero-side-panel.hero-flip-panel,

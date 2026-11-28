@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/premium.css?v=5.0">
+    <link rel="stylesheet" href="css/premium.css?v=5.1">
 </head>
 
 <body>
@@ -1679,19 +1679,34 @@
                             </div>
                         `).join('');
 
-                        // Render synced College Name & Message text slides below poster
+                        // Synced scrolling text track below poster
                         const textTrack = document.getElementById('posterTextTrack');
-                        if (textTrack) {
-                            textTrack.innerHTML = slidesData.map((slide) => {
-                                const collegeText = slide.collegeName || slide.title || '';
-                                const messageText = slide.message || '';
-                                return `
-                                    <div class="poster-text-slide">
-                                        ${collegeText ? `<h3 class="poster-college-name">${escapeTextHtml(collegeText)}</h3>` : ''}
-                                        ${messageText ? `<p class="poster-college-message">${escapeTextHtml(messageText)}</p>` : ''}
-                                    </div>
-                                `;
-                            }).join('');
+                        const captionWrap = document.getElementById('posterCollegeCard');
+
+                        function updatePosterScrollText(slide) {
+                            if (!textTrack || !captionWrap) return;
+                            const collegeText = (slide && (slide.collegeName || slide.title)) || '';
+                            const messageText = (slide && slide.message) || '';
+
+                            if (!collegeText && !messageText) {
+                                captionWrap.style.display = 'none';
+                                textTrack.innerHTML = '';
+                                return;
+                            }
+
+                            captionWrap.style.display = 'block';
+                            const chunkHtml = `
+                                <span class="poster-scroll-chunk">
+                                    ${collegeText ? `<span class="poster-college-name">${escapeTextHtml(collegeText)}</span>` : ''}
+                                    ${collegeText && messageText ? `<span class="poster-scroll-sep">&bull;</span>` : ''}
+                                    ${messageText ? `<span class="poster-college-message">${escapeTextHtml(messageText)}</span>` : ''}
+                                </span>
+                            `;
+                            const halfHtml = chunkHtml + chunkHtml;
+                            textTrack.style.animation = 'none';
+                            textTrack.innerHTML = halfHtml + halfHtml;
+                            void textTrack.offsetWidth;
+                            textTrack.style.animation = '';
                         }
 
                         function goToSlide(idx) {
@@ -1705,9 +1720,7 @@
                             }
 
                             container.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-                            if (textTrack) {
-                                textTrack.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-                            }
+                            updatePosterScrollText(slidesData[currentSlideIndex]);
 
                             // Update active dot
                             if (dotsContainer) {
