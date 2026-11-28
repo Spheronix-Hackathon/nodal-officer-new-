@@ -182,48 +182,24 @@
 
             </div>
 
-            <!-- Image Scroll + Info row -->
-            <div class="editorial-row reveal" style="align-items: center;">
-                <div class="editorial-col hero-poster-col" style="flex: 1.5 1 58%;">
-                    <div class="hero-side-panel hero-flip-panel">
-                        <div class="flipper-container" id="flipperContainer">
-                            <div class="panel-image-scroll" id="panelImageScroll">
-                                <!-- Populated dynamically from Admin Dashboard -->
-                            </div>
-
-                            <!-- Left & Right Arrow Navigation -->
-                            <button type="button" class="flip-nav-arrow flip-nav-prev" id="flipPrevBtn"
-                                aria-label="Previous Poster" title="Previous Poster">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button type="button" class="flip-nav-arrow flip-nav-next" id="flipNextBtn"
-                                aria-label="Next Poster" title="Next Poster">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-
-                            <!-- Slide Dots Indicator -->
-                            <div class="flip-dots-container" id="flipDotsContainer"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="editorial-col" style="flex: 1 1 38%; justify-content:center;">
-                    <div style="padding:8px 0;">
+            <!-- Fee & Highlights Row (Centered) -->
+            <div class="editorial-row reveal" style="justify-content: center; margin-bottom: 34px;">
+                <div class="editorial-col" style="flex: 1 1 100%; max-width: 960px; margin: 0 auto; align-items: center; text-align: center;">
+                    <div style="padding: 8px 0; width: 100%;">
                         <!-- Fee Highlight -->
                         <div
-                            style="display:inline-flex;align-items:center;gap:8px;background:#FFF9EC;border:1.5px solid rgba(201,134,14,0.3);border-radius:10px;padding:6px 14px;margin-bottom:1rem;">
+                            style="display:inline-flex;align-items:center;gap:8px;background:#FFF9EC;border:1.5px solid rgba(201,134,14,0.3);border-radius:10px;padding:6px 14px;margin-bottom:0.85rem;">
                             <i class="fas fa-rupee-sign" style="color:#C9860E;font-size:0.82rem;"></i>
                             <span
                                 style="font-size:0.8rem;font-weight:700;color:#C9860E;letter-spacing:0.05em;text-transform:uppercase;">Registration
                                 Fee</span>
                         </div>
                         <p
-                            style="font-size:2.2rem;font-weight:800;color:#0D1B3E;margin-bottom:1rem;font-family:'Poppins',sans-serif;line-height:1.1;">
+                            style="font-size:2.3rem;font-weight:800;color:#0D1B3E;margin-bottom:1.4rem;font-family:'Poppins',sans-serif;line-height:1.1;">
                             ₹399 <span style="font-size:1rem;color:#667085;font-weight:400;">per student</span>
                         </p>
 
-
-
-                        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;width:100%;text-align:left;">
                             <div
                                 style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,0.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.9);border-radius:16px;box-shadow:0 4px 16px rgba(15,23,42,0.04),inset 0 1px 1px #fff;">
                                 <div
@@ -251,6 +227,32 @@
                                 <span style="color:#2D3748;font-size:0.92rem;">Prize pool: <strong
                                         style="color:#0D1B3E;">₹2,00,000–₹5,00,000</strong></span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poster Row (Above Join Leading Institutions) -->
+            <div class="editorial-row reveal" style="justify-content: center; margin-bottom: 36px;">
+                <div class="editorial-col hero-poster-col" style="flex: 0 1 820px; max-width: 820px; width: 100%; margin: 0 auto;">
+                    <div class="hero-side-panel hero-flip-panel">
+                        <div class="flipper-container" id="flipperContainer">
+                            <div class="panel-image-scroll" id="panelImageScroll">
+                                <!-- Populated dynamically from Admin Dashboard -->
+                            </div>
+
+                            <!-- Left & Right Arrow Navigation -->
+                            <button type="button" class="flip-nav-arrow flip-nav-prev" id="flipPrevBtn"
+                                aria-label="Previous Poster" title="Previous Poster">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button type="button" class="flip-nav-arrow flip-nav-next" id="flipNextBtn"
+                                aria-label="Next Poster" title="Next Poster">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+
+                            <!-- Slide Dots Indicator -->
+                            <div class="flip-dots-container" id="flipDotsContainer"></div>
                         </div>
                     </div>
                 </div>
