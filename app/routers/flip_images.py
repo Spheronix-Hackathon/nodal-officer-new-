@@ -7,7 +7,7 @@ from fastapi import APIRouter, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from app.database.mongodb import async_db, settings_collection
+from app.database.mongodb import async_db, settings_collection, nodal_registrations_collection
 from app.services.auth_service import AuthService
 
 logger = logging.getLogger("app.flip_images")
@@ -136,6 +136,60 @@ async def admin_list_flip_images(user: Dict[str, Any] = None):
         "success": True,
         "images": images,
         "count": len(images),
+    }
+
+
+@router.get("/admin/colleges-options")
+async def admin_list_college_options(authorization: Optional[str] = Header(None)):
+    """Admin endpoint to fetch unique college names from MongoDB for poster assignment."""
+    await verify_admin_token(authorization)
+
+    seen_lower = set()
+    colleges: List[str] = []
+
+    def add_college(raw_name: Any):
+        if not raw_name:
+            return
+        text = str(raw_name).strip()
+        if not text:
+            return
+        # Extract college name before trailing ", District" if present
+        clean = text.split(",")[0].strip() if "," in text else text
+        if clean and clean.lower() not in seen_lower:
+            seen_lower.add(clean.lower())
+            colleges.append(clean)
+
+    doc = await settings_collection.find_one({}) or {}
+    for key in [
+        "stateLevelColleges",
+        "districtLevelColleges",
+        "andhraBestUniversities",
+        "bestUniversities",
+        "bestInnovationColleges",
+        "bestEmergingTechnologyColleges",
+        "bestEmergingTechColleges",
+        "bestStudentEngagementColleges",
+    ]:
+        val = doc.get(key)
+        if isinstance(val, list):
+            for item in val:
+                if isinstance(item, dict):
+                    add_college(item.get("name") or item.get("college") or item.get("collegeName"))
+                else:
+                    add_college(item)
+        elif isinstance(val, str):
+            for line in val.splitlines():
+                add_college(line)
+
+    nodals = await nodal_registrations_collection.find({}, {"collegeName": 1, "_id": 0}).to_list(1000)
+    for n in nodals:
+        add_college(n.get("collegeName"))
+
+    colleges.sort(key=lambda s: s.lower())
+    return {
+        "success": True,
+        "colleges": colleges,
+        "count": len(colleges),
     }
 
 

@@ -481,8 +481,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 4500);
     }
 
+    let adminDbColleges = [];
+
+    async function loadAdminCollegeOptions() {
+        try {
+            const res = await fetch('/api/admin/colleges-options?_t=' + Date.now(), {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            adminDbColleges = Array.isArray(data.colleges) ? data.colleges : [];
+
+            const datalist = document.getElementById('dbCollegesDatalist');
+            if (datalist) {
+                datalist.innerHTML = adminDbColleges.map(c => {
+                    const safe = String(c).replace(/"/g, '&quot;').replace(/</g, '&lt;');
+                    return `<option value="${safe}"></option>`;
+                }).join('');
+            }
+
+            const populateSelect = (selectId, inputId) => {
+                const sel = document.getElementById(selectId);
+                const inp = document.getElementById(inputId);
+                if (!sel) return;
+                sel.innerHTML = '<option value="">-- Select College from Database --</option>' +
+                    adminDbColleges.map(c => {
+                        const safe = String(c).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        return `<option value="${safe}">${safe}</option>`;
+                    }).join('');
+                if (inp && !sel.dataset.bound) {
+                    sel.dataset.bound = '1';
+                    sel.addEventListener('change', () => {
+                        if (sel.value) inp.value = sel.value;
+                    });
+                }
+            };
+
+            populateSelect('flipUploadCollegeSelect', 'flipImageCollege');
+            populateSelect('flipLinkCollegeSelect', 'flipImageLinkCollege');
+        } catch (err) {
+            console.error('Error loading DB college options:', err);
+        }
+    }
+
     async function loadAdminFlipImages() {
         try {
+            if (adminDbColleges.length === 0) {
+                await loadAdminCollegeOptions();
+            }
             const res = await fetch('/api/flip-images?_t=' + Date.now());
             if (res.ok) {
                 const data = await res.json();
@@ -524,9 +570,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const typeLabel = img.type === 'link' ? 'Web Link' : (img.type === 'default' ? 'Default' : 'Uploaded File');
             const typeClass = img.type === 'link' ? 'flip-type-link' : (img.type === 'default' ? 'flip-type-default' : 'flip-type-upload');
-            const safeCollege = escapeAttr(img.collegeName || '');
+            const rawCollege = img.collegeName || '';
+            const safeCollege = escapeAttr(rawCollege);
             const safeMessage = escapeAttr(img.message || '');
             const safeTitle = escapeAttr(img.title || 'Event Highlight');
+
+            const collegeOptionsHtml = '<option value="">-- Select College from Database --</option>' +
+                adminDbColleges.map(c => {
+                    const safeC = escapeAttr(c);
+                    const selected = rawCollege.toLowerCase() === c.toLowerCase() ? 'selected' : '';
+                    return `<option value="${safeC}" ${selected}>${safeC}</option>`;
+                }).join('');
 
             card.innerHTML = `
                 <div class="flip-reel-thumb-wrap">
@@ -540,9 +594,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div class="flip-reel-url" title="${escapeAttr(img.url)}">${escapeAttr(img.url)}</div>
                     </div>
                     <div class="flip-meta-editor">
-                        <label>College Name</label>
-                        <input type="text" class="flip-edit-input flip-edit-college" value="${safeCollege}" placeholder="Enter college name...">
-                        <label>Message (Shown on Landing)</label>
+                        <label>College Name (Select from Database or Type)</label>
+                        <select class="flip-edit-input flip-select-college" style="background: #ffffff;">${collegeOptionsHtml}</select>
+                        <input type="text" class="flip-edit-input flip-edit-college" list="dbCollegesDatalist" value="${safeCollege}" placeholder="Enter or pick college name...">
+                        <label>Message (Scrolls Below Poster)</label>
                         <textarea class="flip-edit-textarea flip-edit-message" rows="2" placeholder="Enter one message for this college...">${safeMessage}</textarea>
                         <button type="button" class="btn-mini-save btn-save-flip-meta" data-id="${escapeAttr(img.id || '')}">
                             <i class="fas fa-save"></i> Save College &amp; Message
@@ -565,6 +620,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
             flipReelGrid.appendChild(card);
+        });
+
+        // Sync dropdown -> text box inside each card
+        flipReelGrid.querySelectorAll('.flip-select-college').forEach(sel => {
+            sel.addEventListener('change', () => {
+                const card = sel.closest('.flip-reel-card');
+                const inp = card?.querySelector('.flip-edit-college');
+                if (inp && sel.value) {
+                    inp.value = sel.value;
+                }
+            });
         });
 
         // Attach Save College & Message Listeners
@@ -1004,6 +1070,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (res.ok) {
                 showCollegeStatus('All college nominations successfully saved and live on landing page!', true);
                 await loadAdminColleges();
+                await loadAdminCollegeOptions();
             } else {
                 showCollegeStatus(data.detail || 'Could not save college nominations.', false);
             }
