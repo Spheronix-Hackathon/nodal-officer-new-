@@ -1453,6 +1453,89 @@ body>.ap-tricolor-bar {
     white-space: nowrap;
 }
 
+.poster-college-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(238, 245, 255, 0.76));
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    border: 1.5px solid rgba(255, 255, 255, 0.96);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px rgba(15, 49, 114, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.98);
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    text-align: left;
+}
+
+.poster-college-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #FFF1EB;
+    border: 1.5px solid rgba(232, 87, 26, 0.28);
+    color: #E8571A;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.poster-college-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.poster-college-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0D1B3E;
+    line-height: 1.25;
+    margin: 0 0 16px 0;
+}
+
+.poster-college-message-box {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(203, 213, 225, 0.75);
+    border-left: 4px solid #E8571A;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.poster-college-msg-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #0F3172;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.poster-college-msg-label i {
+    color: #E8571A;
+}
+
+.poster-college-message {
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: #2D3748;
+    margin: 0;
+    white-space: pre-line;
+}
+
 .hero-side-panel.hero-flip-panel,
 .hero-side-panel:has(.flipper-container) {
     min-height: auto;
@@ -2772,6 +2855,19 @@ footer::before {
 
     .fee-highlight-card span {
         white-space: normal;
+        font-size: 0.88rem;
+    }
+
+    .poster-college-card {
+        padding: 18px 18px;
+        border-radius: 16px;
+    }
+
+    .poster-college-name {
+        font-size: 1.2rem;
+    }
+
+    .poster-college-message {
         font-size: 0.88rem;
     }
 

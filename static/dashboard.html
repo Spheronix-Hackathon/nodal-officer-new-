@@ -565,6 +565,65 @@
             color: #b91c1c;
         }
 
+        .flip-meta-editor {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .flip-meta-editor label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin: 0;
+        }
+
+        .flip-edit-input,
+        .flip-edit-textarea {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 0.84rem;
+            font-family: inherit;
+            color: #0f172a;
+            background: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .flip-edit-textarea {
+            resize: vertical;
+            min-height: 54px;
+            line-height: 1.4;
+        }
+
+        .btn-mini-save {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            padding: 7px 12px;
+            border-radius: 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-mini-save:hover {
+            opacity: 0.92;
+        }
+
         .mini-preview-container {
             border-radius: 14px;
             overflow: hidden;
@@ -729,16 +788,24 @@
 
                 <!-- Tab 1: Upload Image File -->
                 <form id="flipUploadForm">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: end;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 600; margin-bottom: 6px; display: block;">Select Image File <span style="color: var(--danger);">*</span></label>
                             <input type="file" id="flipImageFile" accept="image/png,image/jpeg,image/jpg,image/webp,image/gif" required>
                             <small style="color: var(--text-muted); display: block; margin-top: 5px;">Supports: JPG, PNG, WEBP, GIF (Max 10MB). Saved to <code>static/images/flip/</code></small>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">Caption / Title (Optional)</label>
-                            <input type="text" id="flipImageTitle" placeholder="e.g. Hackathon Team Work" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">College Name</label>
+                            <input type="text" id="flipImageCollege" placeholder="e.g. Tirumala Engineering College" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
                         </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">Badge / Title (Optional)</label>
+                            <input type="text" id="flipImageTitle" placeholder="e.g. STATE No.1 COLLEGE" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 14px; margin-bottom: 0;">
+                        <label style="font-weight: 600; margin-bottom: 6px; display: block;">College Message (Displayed next to poster)</label>
+                        <textarea id="flipImageMessage" rows="2" placeholder="e.g. Nominated as State No.1 College in Andhra Pradesh for student development and innovation." style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit; resize: vertical;"></textarea>
                     </div>
                     <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
                         <button type="submit" class="btn-submit" id="btnSubmitFlipUpload" style="width: auto; padding: 12px 28px; background: linear-gradient(135deg, #7c3aed, #4f46e5);">
@@ -749,16 +816,24 @@
 
                 <!-- Tab 2: Add by Image Link / URL Formatted -->
                 <form id="flipLinkForm" style="display: none;">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: end;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; align-items: end;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <label style="font-weight: 600; margin-bottom: 6px; display: block;">Image URL / Link <span style="color: var(--danger);">*</span></label>
                             <input type="text" id="flipImageLinkUrl" placeholder="https://example.com/photo.jpg or images/flip/1.jpeg" required style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
                             <small style="color: var(--text-muted); display: block; margin-top: 5px;">Accepts HTTPS web links or relative paths from the website.</small>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">Caption / Title (Optional)</label>
-                            <input type="text" id="flipImageLinkTitle" placeholder="e.g. Coding Marathon" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">College Name</label>
+                            <input type="text" id="flipImageLinkCollege" placeholder="e.g. Tirumala Engineering College" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
                         </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label style="font-weight: 600; margin-bottom: 6px; display: block;">Badge / Title (Optional)</label>
+                            <input type="text" id="flipImageLinkTitle" placeholder="e.g. STATE No.1 COLLEGE" style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 14px; margin-bottom: 0;">
+                        <label style="font-weight: 600; margin-bottom: 6px; display: block;">College Message (Displayed next to poster)</label>
+                        <textarea id="flipImageLinkMessage" rows="2" placeholder="e.g. Nominated as State No.1 College in Andhra Pradesh for student development and innovation." style="width: 100%; padding: 12px 16px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit; resize: vertical;"></textarea>
                     </div>
                     <div style="margin-top: 18px; display: flex; justify-content: flex-end;">
                         <button type="submit" class="btn-submit" id="btnSubmitFlipLink" style="width: auto; padding: 12px 28px; background: linear-gradient(135deg, #10b981, #059669);">
@@ -1211,7 +1286,7 @@
 
     </div>
 
-    <script src="js/dashboard.js?v=3.0"></script>
+    <script src="js/dashboard.js?v=3.1"></script>
 </body>
 
 </html>

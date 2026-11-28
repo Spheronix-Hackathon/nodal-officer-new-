@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/premium.css?v=4.8">
+    <link rel="stylesheet" href="css/premium.css?v=4.9">
 </head>
 
 <body>
@@ -184,16 +184,11 @@
 
             <!-- Fee & Highlights Row (Centered) -->
             <div class="editorial-row reveal" style="justify-content: center; margin-bottom: 34px;">
-                <div class="editorial-col" style="flex: 1 1 100%; max-width: 1120px; margin: 0 auto; align-items: center; text-align: center;">
+                <div class="editorial-col"
+                    style="flex: 1 1 100%; max-width: 1120px; margin: 0 auto; align-items: center; text-align: center;">
                     <div style="padding: 8px 0; width: 100%;">
                         <!-- Fee Highlight -->
-                        <div
-                            style="display:inline-flex;align-items:center;gap:8px;background:#FFF9EC;border:1.5px solid rgba(201,134,14,0.3);border-radius:10px;padding:6px 14px;margin-bottom:0.75rem;">
-                            <i class="fas fa-rupee-sign" style="color:#C9860E;font-size:0.82rem;"></i>
-                            <span
-                                style="font-size:0.8rem;font-weight:700;color:#C9860E;letter-spacing:0.05em;text-transform:uppercase;">Registration
-                                Fee</span>
-                        </div>
+
                         <h3
                             style="font-size:clamp(1.5rem,3.2vw,2rem);font-weight:800;color:#0D1B3E;margin-bottom:0.55rem;font-family:'Poppins',sans-serif;line-height:1.2;">
                             Hackathon <span style="color:#E8571A;">Registration Fee</span>
@@ -216,23 +211,25 @@
                                     style="width:36px;height:36px;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     <i class="fas fa-graduation-cap" style="color:#0F3172;font-size:0.95rem;"></i>
                                 </div>
-                                <span>Open to students from <strong style="color:#0D1B3E;">1st year through final year</strong></span>
+                                <span>Open to students from <strong style="color:#0D1B3E;">1st year through final
+                                        year</strong></span>
                             </div>
                             <div class="fee-highlight-card">
                                 <div
                                     style="width:36px;height:36px;background:rgba(201,134,14,0.1);border:1px solid rgba(201,134,14,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     <i class="fas fa-trophy" style="color:#C9860E;font-size:0.95rem;"></i>
                                 </div>
-                                <span>Prize pool: <strong style="color:#0D1B3E;white-space:nowrap;">₹2,00,000–₹5,00,000</strong></span>
+                                <span>Prize pool: <strong
+                                        style="color:#0D1B3E;white-space:nowrap;">₹2,00,000–₹5,00,000</strong></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Poster Row (Above Join Leading Institutions) -->
-            <div class="editorial-row reveal" style="justify-content: center; margin-bottom: 36px;">
-                <div class="editorial-col hero-poster-col" style="flex: 0 1 820px; max-width: 820px; width: 100%; margin: 0 auto;">
+            <!-- Poster + College Info Row (Above Join Leading Institutions) -->
+            <div class="editorial-row reveal poster-college-row" style="align-items: stretch; justify-content: center; gap: 26px; margin-bottom: 36px;">
+                <div class="editorial-col hero-poster-col" style="flex: 1.45 1 56%;">
                     <div class="hero-side-panel hero-flip-panel">
                         <div class="flipper-container" id="flipperContainer">
                             <div class="panel-image-scroll" id="panelImageScroll">
@@ -251,6 +248,20 @@
 
                             <!-- Slide Dots Indicator -->
                             <div class="flip-dots-container" id="flipDotsContainer"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="editorial-col poster-info-col" style="flex: 1 1 38%; justify-content: center;">
+                    <div class="poster-college-card" id="posterCollegeCard">
+                        <div class="poster-college-badge">
+                            <i class="fas fa-award"></i>
+                            <span id="posterBadgeText">Featured Institution</span>
+                        </div>
+                        <div class="poster-college-label">College Name</div>
+                        <h3 class="poster-college-name" id="posterCollegeName">Loading institution...</h3>
+                        <div class="poster-college-message-box">
+                            <div class="poster-college-msg-label"><i class="fas fa-quote-left"></i> Official Message</div>
+                            <p class="poster-college-message" id="posterCollegeMessage">Fetching institution message from database...</p>
                         </div>
                     </div>
                 </div>
@@ -1634,16 +1645,24 @@
                             "images/flip/6.jpeg"
                         ];
 
-                        const cleanUrls = items.map(item => {
+                        const slidesData = items.map(item => {
                             if (!item) return null;
-                            if (typeof item === 'string') return item.trim();
-                            if (item.dataUrl && typeof item.dataUrl === 'string' && item.dataUrl.startsWith('data:image')) {
-                                return item.dataUrl;
+                            if (typeof item === 'string') {
+                                return { url: item.trim(), title: '', collegeName: '', message: '' };
                             }
-                            return (item.url || item.image || item.dataUrl || '').trim();
+                            const resolvedUrl = (item.dataUrl && typeof item.dataUrl === 'string' && item.dataUrl.startsWith('data:image'))
+                                ? item.dataUrl
+                                : (item.url || item.image || item.dataUrl || '').trim();
+                            if (!resolvedUrl) return null;
+                            return {
+                                url: resolvedUrl,
+                                title: (item.title || '').trim(),
+                                collegeName: (item.collegeName || '').trim(),
+                                message: (item.message || '').trim()
+                            };
                         }).filter(Boolean);
 
-                        if (cleanUrls.length === 0) return;
+                        if (slidesData.length === 0) return;
 
                         let flipSliderTimer = null;
                         let currentSlideIndex = 0;
@@ -1652,14 +1671,14 @@
                         const dotsContainer = document.getElementById('flipDotsContainer');
                         const flipperWrap = document.getElementById('flipperContainer');
 
-                        const totalSlides = cleanUrls.length;
+                        const totalSlides = slidesData.length;
                         currentSlideIndex = 0;
 
                         // Render slides (each slide takes 100% width)
                         container.style.animation = 'none';
-                        container.innerHTML = cleanUrls.map((url, i) => `
+                        container.innerHTML = slidesData.map((slide, i) => `
                             <div class="flip-item" style="flex: 0 0 100%; min-width: 100%; width: 100%; height: 100%;">
-                                <img src="${url}" alt="Hackathon Poster ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="this.onerror=null; this.src='images/flip/1.jpeg';">
+                                <img src="${slide.url}" alt="${slide.collegeName || slide.title || 'Hackathon Poster ' + (i + 1)}" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="this.onerror=null; this.src='images/flip/1.jpeg';">
                             </div>
                         `).join('');
 
@@ -1675,6 +1694,22 @@
 
                             container.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
 
+                            // Update College Name & Message card from database
+                            const activeSlide = slidesData[currentSlideIndex] || {};
+                            const badgeEl = document.getElementById('posterBadgeText');
+                            const collegeEl = document.getElementById('posterCollegeName');
+                            const msgEl = document.getElementById('posterCollegeMessage');
+
+                            if (badgeEl) {
+                                badgeEl.textContent = activeSlide.title || 'Featured Institution';
+                            }
+                            if (collegeEl) {
+                                collegeEl.textContent = activeSlide.collegeName || activeSlide.title || 'Nominated Institution';
+                            }
+                            if (msgEl) {
+                                msgEl.textContent = activeSlide.message || 'Officially recognized for outstanding student participation, technical innovation, and leadership in National Level Tech Hackathon 2026.';
+                            }
+
                             // Update active dot
                             if (dotsContainer) {
                                 const dots = dotsContainer.querySelectorAll('.flip-dot');
@@ -1688,7 +1723,7 @@
                         if (dotsContainer) {
                             if (totalSlides > 1) {
                                 dotsContainer.style.display = 'flex';
-                                dotsContainer.innerHTML = cleanUrls.map((_, i) => `
+                                dotsContainer.innerHTML = slidesData.map((_, i) => `
                                     <button type="button" class="flip-dot ${i === 0 ? 'active' : ''}" data-idx="${i}" aria-label="Go to poster ${i + 1}"></button>
                                 `).join('');
 

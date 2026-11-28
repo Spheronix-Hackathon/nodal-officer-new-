@@ -76,12 +76,24 @@ async def verify_admin_token(authorization: Optional[str] = Header(None)) -> Dic
     user = await AuthService.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User account not found.")
+    is_admin = (user.get("role") == "admin") or (str(user.get("userId", "")).lower() == "admin")
+    if not is_admin:
+        raise HTTPException(status_code=403, detail="Admin privileges required.")
     return user
 
 
 class LinkImageRequest(BaseModel):
     url: str
     title: Optional[str] = None
+    collegeName: Optional[str] = None
+    message: Optional[str] = None
+
+
+class UpdateFlipImageRequest(BaseModel):
+    id: str
+    title: Optional[str] = None
+    collegeName: Optional[str] = None
+    message: Optional[str] = None
 
 
 class DeleteImageRequest(BaseModel):
@@ -131,6 +143,8 @@ async def admin_list_flip_images(user: Dict[str, Any] = None):
 async def admin_upload_flip_image(
     file: UploadFile = File(...),
     title: Optional[str] = Form(None),
+    collegeName: Optional[str] = Form(None),
+    message: Optional[str] = Form(None),
     authorization: Optional[str] = Header(None),
 ):
     """Admin uploads a new image file to static/images/flip/ and registers it in the DB."""
@@ -158,10 +172,16 @@ async def admin_upload_flip_image(
     with open(dest_path, "wb") as f:
         f.write(content)
 
+    clean_college = (collegeName or "").strip()
+    clean_message = (message or "").strip()
+    clean_title = (title or clean_college or os.path.splitext(filename)[0]).strip()
+
     new_img: Dict[str, Any] = {
         "id": f"flip-{uuid.uuid4().hex[:8]}",
         "url": f"images/flip/{safe_filename}",
-        "title": (title or os.path.splitext(filename)[0]).strip(),
+        "title": clean_title,
+        "collegeName": clean_college,
+        "message": clean_message,
         "type": "upload",
         "filename": safe_filename,
         "sizeBytes": len(content),
@@ -201,10 +221,16 @@ async def admin_add_flip_image_link(
     if not (url.startswith("http://") or url.startswith("https://") or url.startswith("images/") or url.startswith("/images/")):
         raise HTTPException(status_code=400, detail="Invalid image URL. Must start with http://, https://, or images/")
 
+    clean_college = (req.collegeName or "").strip()
+    clean_message = (req.message or "").strip()
+    clean_title = (req.title or clean_college or "External Flip Image").strip()
+
     new_img: Dict[str, Any] = {
         "id": f"flip-{uuid.uuid4().hex[:8]}",
         "url": url,
-        "title": (req.title or "External Flip Image").strip(),
+        "title": clean_title,
+        "collegeName": clean_college,
+        "message": clean_message,
         "type": "link",
         "createdAt": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
@@ -223,6 +249,47 @@ async def admin_add_flip_image_link(
         "success": True,
         "message": "Image link added successfully!",
         "image": new_img,
+        "images": current_images,
+    }
+
+
+@router.post("/admin/flip-images/update")
+async def admin_update_flip_image_details(
+    req: UpdateFlipImageRequest,
+    authorization: Optional[str] = Header(None),
+):
+    """Admin updates the college name, message, or title for an existing poster in the database."""
+    await verify_admin_token(authorization)
+
+    current_images = await get_current_flip_images()
+    updated_item = None
+
+    for img in current_images:
+        if img.get("id") == req.id:
+            if req.collegeName is not None:
+                img["collegeName"] = req.collegeName.strip()
+            if req.message is not None:
+                img["message"] = req.message.strip()
+            if req.title is not None and req.title.strip():
+                img["title"] = req.title.strip()
+            img["updatedAt"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            updated_item = img
+            break
+
+    if not updated_item:
+        raise HTTPException(status_code=404, detail="Poster not found in database.")
+
+    await settings_collection.update_one(
+        {},
+        {"$set": {"flipImages": current_images, "updatedAt": datetime.datetime.now(datetime.timezone.utc)}},
+        upsert=True,
+    )
+    logger.info(f"Admin updated poster details for {req.id}: collegeName={updated_item.get('collegeName')}")
+
+    return {
+        "success": True,
+        "message": "College name and message saved to database!",
+        "image": updated_item,
         "images": current_images,
     }
 

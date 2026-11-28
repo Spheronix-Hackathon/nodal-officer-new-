@@ -511,6 +511,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        const escapeAttr = (val) => String(val || '')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
         images.forEach((img, idx) => {
             const card = document.createElement('div');
             card.className = 'flip-reel-card';
@@ -518,17 +524,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const typeLabel = img.type === 'link' ? 'Web Link' : (img.type === 'default' ? 'Default' : 'Uploaded File');
             const typeClass = img.type === 'link' ? 'flip-type-link' : (img.type === 'default' ? 'flip-type-default' : 'flip-type-upload');
+            const safeCollege = escapeAttr(img.collegeName || '');
+            const safeMessage = escapeAttr(img.message || '');
+            const safeTitle = escapeAttr(img.title || 'Event Highlight');
 
             card.innerHTML = `
                 <div class="flip-reel-thumb-wrap">
-                    <img src="${img.url}" alt="${img.title || 'Flip Image'}" loading="lazy" onerror="this.src='images/COMPANY LOGO.png';">
+                    <img src="${escapeAttr(img.url)}" alt="${safeTitle}" loading="lazy" onerror="this.src='images/COMPANY LOGO.png';">
                     <span class="flip-order-badge">#${idx + 1}</span>
                     <span class="flip-type-badge ${typeClass}">${typeLabel}</span>
                 </div>
                 <div class="flip-reel-content">
                     <div>
-                        <div class="flip-reel-title" title="${img.title || 'Untitled'}">${img.title || 'Event Highlight'}</div>
-                        <div class="flip-reel-url" title="${img.url}">${img.url}</div>
+                        <div class="flip-reel-title" title="${safeTitle}">${safeTitle}</div>
+                        <div class="flip-reel-url" title="${escapeAttr(img.url)}">${escapeAttr(img.url)}</div>
+                    </div>
+                    <div class="flip-meta-editor">
+                        <label>College Name</label>
+                        <input type="text" class="flip-edit-input flip-edit-college" value="${safeCollege}" placeholder="Enter college name...">
+                        <label>Message (Shown on Landing)</label>
+                        <textarea class="flip-edit-textarea flip-edit-message" rows="2" placeholder="Enter one message for this college...">${safeMessage}</textarea>
+                        <button type="button" class="btn-mini-save btn-save-flip-meta" data-id="${escapeAttr(img.id || '')}">
+                            <i class="fas fa-save"></i> Save College &amp; Message
+                        </button>
                     </div>
                     <div class="flip-actions-row">
                         <div style="display: flex; gap: 5px;">
@@ -539,7 +557,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
-                        <button type="button" class="btn-mini btn-mini-danger btn-delete-flip" data-id="${img.id || ''}" data-url="${img.url}" title="Delete from banner">
+                        <button type="button" class="btn-mini btn-mini-danger btn-delete-flip" data-id="${escapeAttr(img.id || '')}" data-url="${escapeAttr(img.url)}" title="Delete from banner">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -547,6 +565,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
             flipReelGrid.appendChild(card);
+        });
+
+        // Attach Save College & Message Listeners
+        flipReelGrid.querySelectorAll('.btn-save-flip-meta').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.flip-reel-card');
+                const id = btn.dataset.id;
+                const collegeName = card.querySelector('.flip-edit-college')?.value.trim() || '';
+                const message = card.querySelector('.flip-edit-message')?.value.trim() || '';
+
+                if (!id) {
+                    showFlipStatus('Missing poster ID for update.', false);
+                    return;
+                }
+
+                const origHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                try {
+                    const res = await fetch('/api/admin/flip-images/update', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: id,
+                            collegeName: collegeName,
+                            message: message
+                        })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        showFlipStatus(data.message || 'College name and message saved to database!', true);
+                        await loadAdminFlipImages();
+                    } else {
+                        showFlipStatus(data.detail || 'Could not update poster details.', false);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showFlipStatus('Server error updating poster details.', false);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            });
         });
 
         // Attach Reorder Listeners
@@ -616,6 +681,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const fileInput = document.getElementById('flipImageFile');
             const titleInput = document.getElementById('flipImageTitle');
+            const collegeInput = document.getElementById('flipImageCollege');
+            const messageInput = document.getElementById('flipImageMessage');
             const btnSubmit = document.getElementById('btnSubmitFlipUpload');
 
             if (!fileInput.files.length) {
@@ -626,8 +693,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const file = fileInput.files[0];
             const formData = new FormData();
             formData.append('file', file);
-            if (titleInput.value.trim()) {
+            if (titleInput && titleInput.value.trim()) {
                 formData.append('title', titleInput.value.trim());
+            }
+            if (collegeInput && collegeInput.value.trim()) {
+                formData.append('collegeName', collegeInput.value.trim());
+            }
+            if (messageInput && messageInput.value.trim()) {
+                formData.append('message', messageInput.value.trim());
             }
 
             btnSubmit.disabled = true;
@@ -664,6 +737,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const urlInput = document.getElementById('flipImageLinkUrl');
             const titleInput = document.getElementById('flipImageLinkTitle');
+            const collegeInput = document.getElementById('flipImageLinkCollege');
+            const messageInput = document.getElementById('flipImageLinkMessage');
             const btnSubmit = document.getElementById('btnSubmitFlipLink');
 
             const url = urlInput.value.trim();
@@ -684,7 +759,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     },
                     body: JSON.stringify({
                         url: url,
-                        title: titleInput.value.trim() || undefined
+                        title: titleInput && titleInput.value.trim() ? titleInput.value.trim() : undefined,
+                        collegeName: collegeInput && collegeInput.value.trim() ? collegeInput.value.trim() : undefined,
+                        message: messageInput && messageInput.value.trim() ? messageInput.value.trim() : undefined
                     })
                 });
                 const data = await res.json();
